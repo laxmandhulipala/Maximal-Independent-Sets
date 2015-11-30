@@ -39,18 +39,15 @@ template <class vertex>
 void runGhaffariIteration1(graph<vertex>& G, bool* commit, bool* active, 
                            int* desires, int* nextDesires) {
   const intE n = G.n;
-
   {parallel_for (int i = 0; i < n; i++) { commit[i] = false; }}
 
   {parallel_for (int i = 0; i < n; i++) {
     // for all active vertices, if active then try to add self to MIS. Then
     // update probabilities
     if (active[i]) {
-
       double ourProb = pow(2, desires[i]);
       double randDub = ((double)rand()/(double)RAND_MAX);
       if (randDub <= ourProb) {
-        // vtx wants to try and get into this round
         commit[i] = true;
       }
       updateDesire(G, desires, nextDesires, active, i);
@@ -58,23 +55,17 @@ void runGhaffariIteration1(graph<vertex>& G, bool* commit, bool* active,
   }}
 }
 
-
 template <class vertex>
-int runGhaffariIteration2(graph<vertex>& G, bool* commit, bool* active, bool* inMis) {
+void runGhaffariIteration2(graph<vertex>& G, bool* commit, bool* active, bool* inMis) {
   const intE n = G.n;
 
   {parallel_for (int i = 0; i < n; i++) {
-    // for all active vertices, if active then try to add self to MIS. Then
-    // update probabilities
     if (commit[i]) {
-      // iterate thru ngh, make sure 
       intE outDeg = G.V[i].getOutDegree();
       bool stillIn = true;
       for (int j = 0; j < outDeg; j++) {
         intE ngh = G.V[i].getOutNeighbor(j);
         if (inMis[ngh]) {
-          // ngh made it, we're out. We can also take ourselves out of commit, but
-          // that breaks determinism a bit. 
           active[i] = false;
           stillIn = false;
         }
@@ -90,14 +81,6 @@ int runGhaffariIteration2(graph<vertex>& G, bool* commit, bool* active, bool* in
       }
     }
   }}
-
-  int numActive = 0;
-  for (int i = 0; i < n; i++) {
-    if (active[i]) {
-      numActive++;
-    }
-  }
-  return numActive;
 }
 
 template<class vertex>
@@ -148,7 +131,10 @@ void Compute(graph<vertex>& G, commandLine P) {
   while (numActive > 0) {
     printf("round = %d, numActive = %d\n", round, numActive);
     runGhaffariIteration1(G, commit, active, desires, nextDesires);
-    numActive = runGhaffariIteration2(G, commit, active, inMis);
+    runGhaffariIteration2(G, commit, active, inMis);
+
+    numActive = sequence::sum(active, n);
+
     swap(desires, nextDesires);
     round++;
   }

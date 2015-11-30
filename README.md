@@ -1,4 +1,4 @@
-Implementations of Two Randomized Parallel Maximal Independent Set Algorithms
+Implementations of Luby and Ghaffari MIS Algorithms
 =====================
 
 Organization
