@@ -1,4 +1,4 @@
-Simulations for Luby's and Mohsen Ghaffari's Maximal Independent Set Algorithms
+Implementations of Two Randomized Parallel Maximal Independent Set Algorithms
 =====================
 
 Organization
@@ -9,6 +9,9 @@ Example inputs are provided in the inputs/ directory.
 
 This project was built on top of Ligra: https://github.com/jshun/ligra. Please
 look there for further exposition on framework internals.
+
+Luby's algorithm: http://www.eecs.berkeley.edu/~jshun/simple-analysis.pdf
+Ghaffari's algorithm: http://arxiv.org/abs/1506.05093
 
 Compilation
 --------
