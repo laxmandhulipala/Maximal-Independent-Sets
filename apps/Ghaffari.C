@@ -23,7 +23,7 @@ double getEffectiveDegree(graph<vertex>& G, int* desires, bool* active, int i) {
 
 // assumption: i is still active and needs to be updated
 template <class vertex>
-void updateEffectiveDegree(graph<vertex>& G, int* prev, int* next, bool* active, int i) {
+void updateDesire(graph<vertex>& G, int* prev, int* next, bool* active, int i) {
   double effDeg = getEffectiveDegree(G, prev, active, i);
   int ourDesire = prev[i];
   int nextDesire;
@@ -53,7 +53,7 @@ void runGhaffariIteration1(graph<vertex>& G, bool* commit, bool* active,
         // vtx wants to try and get into this round
         commit[i] = true;
       }
-      updateEffectiveDegree(G, desires, nextDesires, active, i);
+      updateDesire(G, desires, nextDesires, active, i);
     }
   }}
 }
